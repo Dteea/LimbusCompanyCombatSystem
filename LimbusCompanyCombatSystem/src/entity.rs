@@ -3,6 +3,7 @@
 // CS423
 
 use rand::{RngExt, distr::Alphanumeric};
+use crate::skills::*;
 
 // Default constants to change the random range of generating a random entity with it's attributes. Change it however you like!
 const MIN_SANITY: i64 = -45;
@@ -18,11 +19,6 @@ const MAX_STAGGER_HP: u64 = 50;
 const MIN_SPEED: u64 = 1;
 const MAX_SPEED: u64 = 20;
 
-const MIN_DAMAGE: u64 = 5;
-const MAX_DAMAGE: u64 = 15;
-
-const MIN_STAGGER_DAMAGE: u64 = 1;
-const MAX_STAGGER_DAMAGE: u64 = 10;
 
 /// This struct describes what an "Entity" is for this project. Most of the fields are unsigned and do not need negative values except for sanity
 /// which is one of the unique mechanics.
@@ -35,50 +31,7 @@ pub struct Entity {
     skills: [Skill; 3],
 }
 
-// Option to move into it's own module if I really want it.
-#[derive(Debug)]
-pub struct Skill {
-    name: String,
-    health_damage: u64,
-    stagger_damage: u64,
-}
 
-impl std::fmt::Display for Skill {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "SKILL: {} DMG: {}, STAGG_DMG: {}",
-            self.name, self.health_damage, self.stagger_damage
-        )
-    }
-}
-
-impl Skill {
-    pub fn new(name: String, health_damage: u64, stagger_damage: u64) -> Self {
-        Self {
-            name,
-            health_damage,
-            stagger_damage,
-        }
-    }
-
-    pub fn new_random() -> Self {
-        let rng = rand::rng();
-
-        Self {
-            name: rng
-                .clone()
-                .sample_iter(&Alphanumeric)
-                .take(10)
-                .map(char::from)
-                .collect(),
-            health_damage: rng.clone().random_range(MIN_DAMAGE..=MAX_DAMAGE),
-            stagger_damage: rng
-                .clone()
-                .random_range(MIN_STAGGER_DAMAGE..=MAX_STAGGER_DAMAGE),
-        }
-    }
-}
 
 // Stub for damage types, might add later if it isn't complicated. For now stick to only just regular damage.
 
@@ -151,9 +104,16 @@ impl Entity {
     }
 
     // Utilize enum types n error stuff later
+    // *Make it take in a skill??
     /// This method takes in a damage source and subtracts it from the Entity's health and stagger health.
     pub fn take_damage(&mut self, health_damage: u64, stagger_damage: u64) {
-        let _ = self.health.saturating_sub(health_damage);
-        let _ = self.stagger_health.saturating_sub(stagger_damage);
+        self.health = self.health.saturating_sub(health_damage);
+        self.stagger_health = self.stagger_health.saturating_sub(stagger_damage);
+    }
+
+    /// This method takes in a damage source in the form of a skill and subtracts it from the Entity's health and stagger health.
+    pub fn take_skill_damage(&mut self, skill: Skill) {
+        let _ = self.health.saturating_sub(skill.health_damage);
+        let _ = self.health.saturating_sub(skill.stagger_damage);
     }
 }
