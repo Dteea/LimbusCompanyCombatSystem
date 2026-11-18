@@ -3,6 +3,7 @@
 // CS423
 
 use rand::{RngExt, distr::Alphanumeric};
+
 // Default constants to change the random range of generating a random entity with it's attributes. Change it however you like!
 const MIN_SANITY: i64 = -45;
 const MAX_SANITY: i64 = 45;
@@ -17,6 +18,12 @@ const MAX_STAGGER_HP: u64 = 50;
 const MIN_SPEED: u64 = 1;
 const MAX_SPEED: u64 = 20;
 
+const MIN_DAMAGE: u64 = 5;
+const MAX_DAMAGE: u64 = 15;
+
+const MIN_STAGGER_DAMAGE: u64 = 1;
+const MAX_STAGGER_DAMAGE: u64 = 10;
+
 /// This struct describes what an "Entity" is for this project. Most of the fields are unsigned and do not need negative values except for sanity
 /// which is one of the unique mechanics.
 pub struct Entity {
@@ -25,31 +32,106 @@ pub struct Entity {
     stagger_health: u64,
     sanity: i64,
     speed: u64,
+    skills: [Skill; 3],
+}
+
+// Option to move into it's own module if I really want it.
+#[derive(Debug)]
+pub struct Skill {
+    name: String,
+    health_damage: u64,
+    stagger_damage: u64,
+}
+
+impl std::fmt::Display for Skill {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "SKILL: {} DMG: {}, STAGG_DMG: {}",
+            self.name, self.health_damage, self.stagger_damage
+        )
+    }
+}
+
+impl Skill {
+    pub fn new(name: String, health_damage: u64, stagger_damage: u64) -> Self {
+        Self {
+            name,
+            health_damage,
+            stagger_damage,
+        }
+    }
+
+    pub fn new_random() -> Self {
+        let rng = rand::rng();
+
+        Self {
+            name: rng
+                .clone()
+                .sample_iter(&Alphanumeric)
+                .take(10)
+                .map(char::from)
+                .collect(),
+            health_damage: rng.clone().random_range(MIN_DAMAGE..=MAX_DAMAGE),
+            stagger_damage: rng
+                .clone()
+                .random_range(MIN_STAGGER_DAMAGE..=MAX_STAGGER_DAMAGE),
+        }
+    }
 }
 
 // Stub for damage types, might add later if it isn't complicated. For now stick to only just regular damage.
 
+impl std::fmt::Display for Entity {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "NAME: {}", self.name)?;
+        writeln!(f, "HP: {}", self.health)?;
+        writeln!(f, "STAGGER_HP: {}", self.stagger_health)?;
+        writeln!(f, "SP: {}", self.sanity)?;
+        writeln!(f, "SPEED: {}", self.speed)?;
+        writeln!(f, "\nSKILLS:")?;
+
+        for skill in &self.skills {
+            writeln!(f, "{}", skill)?;
+        }
+
+        Ok(())
+    }
+}
+
 impl Entity {
     // Construct Entity based on values passed in.
-    pub fn new(name: String, health: u64, stagger_health: u64, sanity: i64, speed: u64) -> Self {
+    pub fn new(
+        name: String,
+        health: u64,
+        stagger_health: u64,
+        sanity: i64,
+        speed: u64,
+        skills: [Skill; 3],
+    ) -> Self {
         Self {
             name,
             health,
             stagger_health,
             sanity,
             speed,
+            skills,
         }
     }
 
-    /// This method can be used to generate a random entity with random attributes. You can tweak the ranges 
+    /// This method can be used to generate a random entity with random attributes. You can tweak the ranges
     /// directly here in the method for your needs.
     pub fn new_random() -> Self {
         // Seeding stuff
         let rng = rand::rng();
 
+        // Skills
+
         Self {
             // *Play around with clone and rand::rng to see which one is better
             // Create a random alphanumeric name that is 10 characters long with iterators!
+            // Neat field init that I didn't know about so I don't have to create variables and then add them here, but I might mix and match
+            // for code clarity if it needs to be
             name: rng
                 .clone()
                 .sample_iter(&Alphanumeric)
@@ -60,19 +142,18 @@ impl Entity {
             stagger_health: rng.clone().random_range(MIN_STAGGER_HP..=MAX_STAGGER_HP),
             sanity: rng.clone().random_range(MIN_SANITY..=MAX_SANITY),
             speed: rng.clone().random_range(MIN_SPEED..=MAX_SPEED),
+            skills: [
+                Skill::new_random(),
+                Skill::new_random(),
+                Skill::new_random(),
+            ],
         }
     }
 
-    /// This method displays all the values of a entity and does not return anything.
-    pub fn display(&self) {
-        println!(
-            "
-    NAME: {} 
-    HP: {} 
-    STAGGER_HP: {}
-    SP: {}
-    SPEED: {}",
-            self.name, self.health, self.stagger_health, self.sanity, self.speed
-        );
+    // Utilize enum types n error stuff later
+    /// This method takes in a damage source and subtracts it from the Entity's health and stagger health.
+    pub fn take_damage(&mut self, health_damage: u64, stagger_damage: u64) {
+        let _ = self.health.saturating_sub(health_damage);
+        let _ = self.stagger_health.saturating_sub(stagger_damage);
     }
 }
