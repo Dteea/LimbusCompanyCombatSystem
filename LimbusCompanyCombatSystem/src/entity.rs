@@ -2,10 +2,11 @@
 // 11/17/26
 // CS423
 
-use rand::{RngExt, distr::Alphanumeric};
 use crate::skills::*;
+use rand::{RngExt, distr::Alphanumeric};
 
 // Default constants to change the random range of generating a random entity with it's attributes. Change it however you like!
+// May make this into inputs for program or have another function handle it.
 const MIN_SANITY: i64 = -45;
 const MAX_SANITY: i64 = 45;
 
@@ -19,7 +20,6 @@ const MAX_STAGGER_HP: u64 = 50;
 const MIN_SPEED: u64 = 1;
 const MAX_SPEED: u64 = 20;
 
-
 /// This struct describes what an "Entity" is for this project. Most of the fields are unsigned and do not need negative values except for sanity
 /// which is one of the unique mechanics.
 pub struct Entity {
@@ -31,9 +31,7 @@ pub struct Entity {
     skills: [Skill; 3],
 }
 
-
-
-// Stub for damage types, might add later if it isn't complicated. For now stick to only just regular damage.
+// Stub for damage types, might add later if it isn't complicated. For now stick to only just regular damage. Traits may be good for this.
 
 impl std::fmt::Display for Entity {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -44,8 +42,8 @@ impl std::fmt::Display for Entity {
         writeln!(f, "SPEED: {}", self.speed)?;
         writeln!(f, "\nSKILLS:")?;
 
-        for skill in &self.skills {
-            writeln!(f, "{}", skill)?;
+        for (index, skill) in self.skills.iter().enumerate() {
+            writeln!(f, "SKILL: {} {}", index + 1, skill)?;
         }
 
         Ok(())
@@ -73,12 +71,10 @@ impl Entity {
     }
 
     /// This method can be used to generate a random entity with random attributes. You can tweak the ranges
-    /// directly here in the method for your needs.
+    /// directly here in the method for your needs. Defaults are provided with the consts.
     pub fn new_random() -> Self {
         // Seeding stuff
         let rng = rand::rng();
-
-        // Skills
 
         Self {
             // *Play around with clone and rand::rng to see which one is better
@@ -88,6 +84,7 @@ impl Entity {
             name: rng
                 .clone()
                 .sample_iter(&Alphanumeric)
+                // Can replace with better name generator or change the length of random string.
                 .take(10)
                 .map(char::from)
                 .collect(),

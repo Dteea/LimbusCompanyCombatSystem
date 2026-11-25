@@ -2,7 +2,6 @@
 // 11/4/26
 // CS423
 
-
 mod battle;
 mod entity;
 mod skills;
@@ -18,11 +17,7 @@ fn main() {
         30,
         -32,
         1,
-        [
-            s1,
-            Skill::new_random(),
-            Skill::new_random(),
-        ],
+        [s1, Skill::new_random(), Skill::new_random()],
     );
     println!("{}", character);
 

@@ -2,6 +2,7 @@
 // 11/17/26
 // CS423
 
+// I love random*
 use rand::{RngExt, distr::Alphanumeric};
 
 const MIN_DAMAGE: u64 = 5;
@@ -25,7 +26,7 @@ impl std::fmt::Display for Skill {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "SKILL: {} DMG: {}, STAGG_DMG: {}",
+            "NAME: {} DMG: {}, STAGG_DMG: {}",
             self.name, self.health_damage, self.stagger_damage
         )
     }
