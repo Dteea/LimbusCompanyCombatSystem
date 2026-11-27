@@ -77,6 +77,7 @@ impl Entity {
         let rng = rand::rng();
 
         Self {
+            // Might need to find a better way instead of cloning.
             // *Play around with clone and rand::rng to see which one is better
             // Create a random alphanumeric name that is 10 characters long with iterators!
             // Neat field init that I didn't know about so I don't have to create variables and then add them here, but I might mix and match
