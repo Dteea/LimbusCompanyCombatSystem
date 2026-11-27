@@ -20,7 +20,6 @@ pub struct Skill {
     pub stagger_damage: u64,
 }
 
-
 // Pretty Print with colors in terminal for the damage!
 impl std::fmt::Display for Skill {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

@@ -22,13 +22,14 @@ const MAX_SPEED: u64 = 20;
 
 /// This struct describes what an "Entity" is for this project. Most of the fields are unsigned and do not need negative values except for sanity
 /// which is one of the unique mechanics.
+#[derive(Debug, Clone)]
 pub struct Entity {
-    name: String,
+    pub name: String,
     health: u64,
     stagger_health: u64,
     sanity: i64,
-    speed: u64,
-    skills: [Skill; 3],
+    pub speed: u64,
+    pub skills: [Skill; 3],
 }
 
 // Stub for damage types, might add later if it isn't complicated. For now stick to only just regular damage. Traits may be good for this.
@@ -110,7 +111,7 @@ impl Entity {
     }
 
     /// This method takes in a damage source in the form of a skill and subtracts it from the Entity's health and stagger health.
-    pub fn take_skill_damage(&mut self, skill: Skill) {
+    pub fn take_skill_damage(&mut self, skill: &Skill) {
         let _ = self.health.saturating_sub(skill.health_damage);
         let _ = self.health.saturating_sub(skill.stagger_damage);
     }

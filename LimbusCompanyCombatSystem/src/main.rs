@@ -2,7 +2,6 @@
 // 11/4/26
 // CS423
 
-
 // TODO: For feature, add coloring to terminal using either owo-colors or colored cargo crate. Look at Rust interface UI's for terminal.
 mod battle;
 mod entity;
