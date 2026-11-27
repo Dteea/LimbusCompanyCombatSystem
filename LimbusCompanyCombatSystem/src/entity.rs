@@ -7,8 +7,8 @@ use rand::{RngExt, distr::Alphanumeric};
 
 // Default constants to change the random range of generating a random entity with it's attributes. Change it however you like!
 // May make this into inputs for program or have another function handle it.
-const MIN_SANITY: i64 = -45;
-const MAX_SANITY: i64 = 45;
+//const MIN_SANITY: i64 = -45;
+//const MAX_SANITY: i64 = 45;
 
 const MIN_HP: u64 = 1;
 const MAX_HP: u64 = 200;
@@ -115,5 +115,9 @@ impl Entity {
     pub fn take_skill_damage(&mut self, skill: &Skill) {
         let _ = self.health.saturating_sub(skill.health_damage);
         let _ = self.health.saturating_sub(skill.stagger_damage);
+    }
+
+    pub fn _is_dead(&self) -> bool {
+        self.health.eq(&0)
     }
 }

@@ -25,7 +25,7 @@ fn main() {
     let mut c2 = entity::Entity::new_random();
     println!("{}", c2);
 
-    c2.take_skill_damage(t);
+    c2.take_skill_damage(&t);
 
     character.take_damage(10, 20);
     println!("{}", character);

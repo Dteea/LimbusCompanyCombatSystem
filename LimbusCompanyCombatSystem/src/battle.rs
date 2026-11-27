@@ -3,7 +3,7 @@
 // CS423
 
 use crate::entity::Entity;
-use rand::{RngExt};
+use rand::RngExt;
 
 const MAX_ENTITES: u64 = 5;
 
@@ -36,13 +36,23 @@ impl Battle {
 
         Self {
             turn_count: 1,
-            _left_team: vec![Entity::new_random(); rng.clone().random_range(1..=MAX_ENTITES) as usize], 
-            _right_team: vec![Entity::new_random(); rng.clone().random_range(1..=MAX_ENTITES) as usize] 
+            _left_team: vec![
+                Entity::new_random();
+                rng.clone().random_range(1..=MAX_ENTITES) as usize
+            ],
+            _right_team: vec![
+                Entity::new_random();
+                rng.clone().random_range(1..=MAX_ENTITES) as usize
+            ],
         }
     }
 
     // TODO: Figure out how to pick which skill to use, and check
     // Suppose to use rng for coins, but for now keep simple
+    // Maybe return the index of which entity won
+    // Don't know if I should call clash a bunch of times or do it 
+    // all at once, probably stick to the first
+    //pub fn clash_team(&mut self) {todo!()}
     pub fn clash(left: &mut Entity, right: &mut Entity) {
         // For now test with skill 1
         // Clash logic
@@ -50,6 +60,27 @@ impl Battle {
         // A Tie keeps going until a coin rolls higher than other skill or clash reaches 99
         if left.skills[0].health_damage > right.skills[0].health_damage {
             right.take_skill_damage(&left.skills[0]);
+        } else if left.skills[0].health_damage > right.skills[0].health_damage {
+            left.take_skill_damage(&right.skills[0]);
+        } else {
+            todo!("make tie")
+        }
+    }
+
+    pub fn start_actions(&self) /* -> u64*/
+    {
+        loop {
+
+
+
+            // Last team standing wins the battle.
+            if self._left_team.is_empty() {
+                println!("You win!");
+                break;
+            } else if self._right_team.is_empty() {
+                println!("You lose...");
+                break;
+            }
         }
     }
 }
