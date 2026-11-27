@@ -92,7 +92,8 @@ impl Entity {
                 .collect(),
             health: rng.clone().random_range(MIN_HP..=MAX_HP),
             stagger_health: rng.clone().random_range(MIN_STAGGER_HP..=MAX_STAGGER_HP),
-            sanity: rng.clone().random_range(MIN_SANITY..=MAX_SANITY),
+            // Sanity starts at 0 and can go negative or positive, up to 100. It helps determine if the skill will land or not
+            sanity: 0,
             speed: rng.clone().random_range(MIN_SPEED..=MAX_SPEED),
             skills: [
                 Skill::new_random(),
